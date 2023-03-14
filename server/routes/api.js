@@ -6,15 +6,15 @@ const moment = require("moment");
 
 router.get("/expenses", function (req, res) {
   Expense.find({})
-    .sort({ date: "asc" })
+    .sort({ date: -1 })
     .then((expenses) => {
       res.send(expenses);
     });
 });
 
 router.get("/expenses", function (req, res) {
-  let d1 = req.query.d1;
-  let d2 = req.query.d2 ? req.query.d2 : moment().format("YYYY-MM-DD");
+  let d1 = moment(req.query.d1, "YYYY-MM-DD");
+  let d2 = req.query.d2 ? moment(req.query.d2, "YYYY-MM-DD") : moment().format("YYYY-MM-DD");
 
   if (d1 != undefined) {
     Expense.find({
@@ -40,7 +40,7 @@ router.post("/expenses", function (req, res) {
   let item = expense.item;
   let amount = expense.amount;
   let group = expense.group;
-  let date = expense.date ? expense.date : moment().format("YYYY-MM-DD");
+  let date = expense.date ? moment(expense.date, "YYYY-MM-DD") : moment().format("YYYY-MM-DD");
 
   let newExpense = new Expense({ item, amount, group, date });
   newExpense.save().then(() => {
